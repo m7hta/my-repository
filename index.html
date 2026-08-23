@@ -33,6 +33,41 @@
             padding: 20px;
         }
 
+        /* Keyframe Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulseAlert {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(-15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Elements */
         .card {
             background-color: var(--card-bg);
             border-radius: 12px;
@@ -42,6 +77,16 @@
             padding: 40px;
             text-align: center;
             border-top: 5px solid var(--danger);
+            
+            /* Card Animation */
+            opacity: 0;
+            animation: fadeInUp 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.1);
         }
 
         .icon-container {
@@ -53,6 +98,9 @@
             align-items: center;
             justify-content: center;
             margin: 0 auto 20px;
+            
+            /* Icon Pulse Animation */
+            animation: pulseAlert 2.5s infinite cubic-bezier(0.66, 0, 0, 1);
         }
 
         .icon-container svg {
@@ -81,13 +129,23 @@
             padding: 20px;
             text-align: left;
             margin-bottom: 30px;
+            overflow: hidden;
         }
 
         .detail-item {
             display: flex;
             margin-bottom: 12px;
             font-size: 0.9rem;
+            
+            /* Staggered Detail Animation */
+            opacity: 0;
+            animation: fadeInRight 0.5s ease-out forwards;
         }
+
+        /* Animation delays for the staggered effect */
+        .detail-item:nth-child(1) { animation-delay: 0.4s; }
+        .detail-item:nth-child(2) { animation-delay: 0.6s; }
+        .detail-item:nth-child(3) { animation-delay: 0.8s; }
 
         .detail-item:last-child {
             margin-bottom: 0;
@@ -119,6 +177,10 @@
             font-size: 0.85rem;
             color: var(--text-muted);
             letter-spacing: 0.5px;
+            
+            /* Footer Fade Animation */
+            opacity: 0;
+            animation: fadeIn 1s ease-out 1s forwards;
         }
 
         .developer {
