@@ -3,230 +3,259 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Page Blocked</title>
+    <title>System Maintenance</title>
     <style>
         :root {
-            --bg-color: #f3f4f6;
-            --card-bg: #ffffff;
-            --text-main: #1f2937;
-            --text-muted: #6b7280;
-            --danger: #ef4444;
-            --danger-light: #fee2e2;
-            --border-color: #e5e7eb;
+            --bg-primary: #050505;
+            --bg-secondary: #0B0B0D;
+            --glass-surface: rgba(21, 21, 24, 0.65); /* #151518 with transparency */
+            --border-color: #242428;
+            --text-primary: #F5F5F5;
+            --text-secondary: #A1A1A6;
+            --accent-blush: #D9A7B8;
+            --accent-pearl: #E8DCC8;
         }
 
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Inter", "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            padding: 20px;
+            overflow: hidden;
+            position: relative;
         }
 
-        /* Keyframe Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
+        /* Fine-grain noise texture */
+        .noise-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Atmospheric Gradients & Glows */
+        .ambient-glow {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.4;
+            z-index: 0;
+            animation: shiftGlow 18s ease-in-out infinite alternate;
+        }
+
+        .glow-1 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(217, 167, 184, 0.05), transparent 60%);
+            top: -10%;
+            left: 20%;
+        }
+
+        .glow-2 {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(40, 40, 45, 0.3), transparent 60%);
+            bottom: -20%;
+            right: 10%;
+            animation-delay: -9s;
+        }
+
+        @keyframes shiftGlow {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(30px, 40px) scale(1.05); }
+        }
+
+        /* Main Glassmorphism Panel */
+        .glass-card {
+            position: relative;
+            z-index: 10;
+            background: var(--glass-surface);
+            backdrop-filter: blur(32px);
+            -webkit-backdrop-filter: blur(32px);
+            border: 1px solid var(--border-color);
+            border-top: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 32px;
+            padding: 64px 56px;
+            max-width: 480px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.02);
+            
+            /* Entrance Animation */
+            opacity: 0;
+            transform: translateY(24px);
+            animation: cardEntrance 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes cardEntrance {
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
 
-        @keyframes pulseAlert {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-            70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-        }
-
-        @keyframes fadeInRight {
-            from {
-                opacity: 0;
-                transform: translateX(-15px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* Elements */
-        .card {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-            max-width: 500px;
-            width: 100%;
-            padding: 40px;
-            text-align: center;
-            border-top: 5px solid var(--danger);
-            
-            /* Card Animation */
-            opacity: 0;
-            animation: fadeInUp 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.1);
-        }
-
-        .icon-container {
-            width: 80px;
-            height: 80px;
-            background-color: var(--danger-light);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            
-            /* Icon Pulse Animation */
-            animation: pulseAlert 2.5s infinite cubic-bezier(0.66, 0, 0, 1);
-        }
-
-        .icon-container svg {
-            width: 40px;
-            height: 40px;
-            color: var(--danger);
+        /* Typography & Content Structure */
+        .system-tag {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.25em;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            display: block;
         }
 
         h1 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 15px;
+            font-size: 2.2rem;
+            font-weight: 400;
+            letter-spacing: -0.03em;
+            color: var(--text-primary);
+            margin-bottom: 16px;
         }
 
-        .message {
-            color: var(--text-muted);
+        p {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+        }
+
+        /* Status Indicator */
+        .status-container {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 40px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 999px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 0.75rem;
+            letter-spacing: 0.08em;
+            color: var(--text-secondary);
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: var(--accent-blush);
+            box-shadow: 0 0 10px var(--accent-blush);
+            animation: pulseStatus 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulseStatus {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.9); box-shadow: 0 0 2px var(--accent-blush); }
+        }
+
+        /* Premium Button */
+        .btn {
+            display: inline-block;
+            padding: 16px 44px;
             font-size: 0.95rem;
-            line-height: 1.5;
-            margin-bottom: 30px;
-        }
-
-        .details-box {
-            background-color: #f9fafb;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 20px;
-            text-align: left;
-            margin-bottom: 30px;
+            font-weight: 500;
+            color: var(--bg-primary);
+            background: linear-gradient(180deg, var(--accent-pearl) 0%, #D8CFC0 100%);
+            text-decoration: none;
+            border-radius: 999px;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 4px 15px rgba(232, 220, 200, 0.1), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+            position: relative;
             overflow: hidden;
         }
 
-        .detail-item {
-            display: flex;
-            margin-bottom: 12px;
-            font-size: 0.9rem;
-            
-            /* Staggered Detail Animation */
-            opacity: 0;
-            animation: fadeInRight 0.5s ease-out forwards;
-        }
-
-        /* Animation delays for the staggered effect */
-        .detail-item:nth-child(1) { animation-delay: 0.4s; }
-        .detail-item:nth-child(2) { animation-delay: 0.6s; }
-        .detail-item:nth-child(3) { animation-delay: 0.8s; }
-
-        .detail-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .detail-label {
-            font-weight: 600;
-            width: 90px;
-            color: var(--text-main);
-        }
-
-        .detail-value {
-            color: var(--text-muted);
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-            word-break: break-all;
-        }
-
-        .category-badge {
-            background-color: var(--danger-light);
-            color: #b91c1c;
-            padding: 2px 8px;
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, transparent 100%);
             border-radius: 999px;
-            font-size: 0.8rem;
-            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(232, 220, 200, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.8);
+            background: linear-gradient(180deg, #F0E6D5 0%, var(--accent-pearl) 100%);
+        }
+
+        .btn:hover::after {
+            opacity: 1;
+        }
+
+        /* Footer */
         .footer {
-            margin-top: 40px;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            letter-spacing: 0.5px;
-            
-            /* Footer Fade Animation */
+            position: absolute;
+            bottom: 32px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.02em;
+            z-index: 10;
             opacity: 0;
-            animation: fadeIn 1s ease-out 1s forwards;
+            animation: cardEntrance 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
         }
 
         .developer {
-            font-weight: 600;
-            color: var(--text-main);
+            color: var(--text-primary);
+            font-weight: 500;
         }
 
+        /* Responsive Adjustments */
         @media (max-width: 480px) {
-            .card {
-                padding: 30px 20px;
+            .glass-card {
+                padding: 48px 32px;
+                border-radius: 28px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            p {
+                font-size: 0.95rem;
             }
         }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <div class="icon-container">
-            <!-- Alert Document SVG Icon -->
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-        </div>
+    <!-- SVG Noise Texture & Glows -->
+    <div class="noise-overlay"></div>
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
 
-        <h1>Web Page Blocked</h1>
+    <!-- Main Interface -->
+    <main class="glass-card">
+        <span class="system-tag">SYSTEM_STATUS / 02</span>
         
-        <p class="message">
-            The web page you are trying to visit has been blocked in accordance with company policy. Please contact your system administrator if you believe this is an error.
-        </p>
-
-        <div class="details-box">
-            <div class="detail-item">
-                <span class="detail-label">User:</span>
-                <span class="detail-value">10.5.186.157</span>
-            </div>
-            <div class="detail-item">
-                <span class="detail-label">URL:</span>
-                <span class="detail-value">m7hta.com/</span>
-            </div>
-            <div class="detail-item">
-                <span class="detail-label">Category:</span>
-                <span class="detail-value category-badge">high-risk</span>
-            </div>
+        <h1>Temporarily Offline</h1>
+        <p>We're making a few things better.<br>The system will be back shortly.</p>
+        
+        <div class="status-container">
+            <span class="status-dot"></span>
+            MAINTENANCE MODE
         </div>
-    </div>
+        <br>
+        <a href="#" class="btn">Enter System</a>
+    </main>
 
+    <!-- Footer -->
     <div class="footer">
         Designed & Developed by <span class="developer">Chaitanya Mehta</span>
     </div>
